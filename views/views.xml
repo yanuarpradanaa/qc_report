@@ -1,0 +1,23 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="qc_report_view">
+			<field name="name">qc_report_view</field>
+			<field name="model">qc.inspection</field>
+			<field name="inherit_id" ref="quality_control.qc_inspection_form_view"/>
+			<field name="arch" type="xml">
+				<field name="auto_generated" position="after">
+					<field name="jenis_kertas" />
+					<field name="grammatur" />
+					<field name="panjang" />
+					<field name="lebar" />
+					<field name="tinggi" />
+				</field>
+				<field name="product" position="after">
+					<field name="qty_bundle" />
+				</field>
+			</field>
+		</record>
+
+  </data>
+</odoo>

@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+		
+		<template id="qc_report.qc_report_document">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="doc">
+					<t t-call="qc_report.qc_report_document2"/>
+				</t>
+			</t>
+		</template>
+
+		<template id="qc_report.qc_report_document2">
+			<t t-name="qc_report.qc_report_document2">
+
+				<xpath expr="//div[@class='first-page header']" position="replace">
+					<div class="header">
+						<div class="row">
+							<div class="col-xs-3"></div>
+						</div>
+						<div class="row zero_min_height">
+							<div class="col-xs-12"></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6" name="company_address"></div>
+						</div>
+					</div>
+				</xpath>
+
+				<t t-call="report.external_layout">
+					<div class="page">
+						<div class="oe_structure"/>
+						<div class="header">
+							<div class="row">
+								<div class="col-xs-8">
+									<img t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" style="height: 75px; margin-bottom: 5px;"/>
+								</div>
+								<div class="col-xs-4" name="company_address">
+									<span t-field="res_company.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}" style="display: inline-block;"/>
+								</div>
+							</div>
+							<div class="row zero_min_height">
+								<div class="col-xs-12">
+									<div style="border-bottom: 1px solid black;"/>
+								</div>
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-xs-12 text-center">
+								<span><strong>CERTIFICATE OF ANALYSIS</strong></span><br/>
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-xs-6">
+								<table>
+									<tr>
+										<td>No.</td>
+										<td>: <span t-field="doc.name"/></td>
+									</tr>
+									<t t-if="doc.object_id.name"><tr>
+										<td>No. DO</td>
+										<td>: <span t-field="doc.object_id.name"/></td>
+									</tr></t>
+									<t t-if="doc.product_ref"><tr>
+										<td>No. SO</td>
+										<td>: <span t-field="doc.so_ref"/></td>
+									</tr></t>
+									<tr>
+										<td>Product</td>
+										<td>: <span t-field="doc.product_ref"/></td>
+									</tr>
+									<tr>
+										<td>Customer</td>
+										<td>: <span t-field="doc.so_ref.partner_id"/></td>
+									</tr>
+									<t t-if="doc.so_ref.client_order_ref"><tr>
+										<td>PO Customer</td>
+										<td>: <span t-field="doc.so_ref.client_order_ref"/></td>
+									</tr></t>
+									<tr>
+										<td>Quantity</td>
+										<td>: <span t-esc="doc.qty" t-options="{'widget': 'float', 'precision': 0}"/></td>
+									</tr>
+									<tr>
+										<td>Quantity Sample</td>
+										<td>: <span t-esc="doc.qty_sample" t-options="{'widget': 'float', 'precision': 0}"/></td>
+									</tr>
+									<tr>
+										<td>Quantity Per Bundle</td>
+										<td>: <span t-esc="doc.qty_bundle" t-options="{'widget': 'float', 'precision': 0}"/></td>
+									</tr>
+									<t t-if="doc.date"><tr>
+										<td>Date</td>
+										<td>: <span t-field="doc.date"/></td>
+									</tr></t>
+								</table>
+							</div>
+						</div>
+						<br/> 
+						<div class="row">
+							<!-- CUSTOM CSS -->
+							<style>
+								.custom-thead tr th {
+									padding:5px !important;
+									text-align: center;
+								}
+
+								.custom-tbody tr td {
+									padding:5px !important;
+								}
+							</style>
+							<!--  -->
+							<table class="table table-bordered">
+								<thead class="custom-thead">
+									<tr>
+										<th>NO.</th>
+										<th colspan="2">PARAMETER ANALISIS</th>
+										<th>PRODUKSI</th>
+									</tr>
+								</thead>
+								<tbody class="custom-tbody">
+									<t t-set="i" t-value="1"/>
+									<tr style="height: 10px !important;">
+										<td class="text-center"><t t-esc="i" /></td>
+										<td colspan="2">Jenis Kertas</td>
+										<td class="text-center">
+											<span t-field="doc.jenis_kertas"/>
+										</td>
+										<t t-set="i" t-value="i+1"/>
+									</tr>
+									<tr>
+										<td class="text-center"><t t-esc="i" /></td>
+										<td colspan="2">Grammatur</td>
+										<td class="text-center"><span t-field="doc.grammatur"/></td>
+										<t t-set="i" t-value="i+1"/>
+									</tr>
+									<t t-foreach="doc.inspection_lines" t-as="ins">
+										<tr>
+											<td class="text-center"><t t-esc="i" /></td>
+											<td colspan="2"><span t-field="ins.name"/></td>
+											<td class="text-center"><span t-field="ins.qualitative_value"/></td>
+											<t t-set="i" t-value="i+1"/>
+										</tr>
+									</t>
+									<tr>
+										<td rowspan="3" class="text-center" style="vertical-align: middle !important;"><t t-esc="i" /></td>
+										<td rowspan="3" style="vertical-align: middle !important;">Dimensi</td>
+										<td>a. Panjang</td>
+										<td class="text-center"><span t-field="doc.panjang"/></td>
+										<t t-set="i" t-value="i+1"/>
+									</tr>
+									<tr>
+										<td>b. Lebar</td>
+										<td class="text-center"><span t-field="doc.lebar"/></td>
+									</tr>
+									<tr>
+										<td>c. Tinggi</td>
+										<td class="text-center"><span t-field="doc.tinggi"/></td>
+									</tr>
+									<tr>
+										<td rowspan="2" class="text-center" style="vertical-align: middle !important;"><t t-esc="i" /></td>
+										<td rowspan="2" style="vertical-align: middle !important;">Status</td>
+										<td>Sukses</td>
+										<t t-if="doc.success == True">
+											<td class="text-center" rowspan="2" style="vertical-align: middle !important;">SUKSES</td>
+										</t>
+										<t t-if="doc.success == False">
+											<td class="text-center" rowspan="2" style="vertical-align: middle !important;">REJECT</td>
+										</t>
+									</tr>
+									<tr>
+										<td>Reject</td>
+									</tr>
+									<tr>
+										<td rowspan="2" colspan="2" style="width: 50%">
+											<small>Notes:</small><br/>
+											<span t-field="doc.internal_notes"/>
+										</td>
+										<td colspan="2" class="text-center" style="padding:1px !important;"><small>Approved by</small></td>
+									</tr>
+									<tr>
+										<td colspan="2" class="text-center" style="padding:1px !important;">
+											<small>QC Field</small>
+											<br/>
+											<br/>
+											<br/>
+											<span t-field="doc.user"/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="oe_structure"/>
+					</div>
+				</t>
+			</t>
+		</template>
+	</data>
+</odoo>
